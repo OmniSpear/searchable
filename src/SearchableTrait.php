@@ -1,6 +1,8 @@
-<?php namespace Nicolaslopezj\Searchable;
+<?php namespace OmniSpear\Searchable;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -41,8 +43,9 @@ trait SearchableTrait
         $query = clone $q;
         $query->select($this->getTable() . '.*');
         $this->makeJoins($query);
+        $this->makeRelationships($query);
 
-       if ($search === false)
+        if ($search === false)
         {
             return $q;
         }
@@ -182,6 +185,44 @@ trait SearchableTrait
                     $join->whereRaw($keys[2] . ' = "' . $keys[3] . '"');
                 }
             });
+        }
+    }
+
+
+    /**
+     * Returns the tables that are to be joined.
+     *
+     * @return array
+     */
+    protected function getRelationships()
+    {
+        return Arr::get($this->searchable, 'relationships', []);
+    }
+
+    /**
+     * Adds the sql joins to the query.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     */
+    protected function makeRelationships(Builder $query)
+    {
+        foreach ($this->getRelationships() as $relation => $keys) {
+            if (method_exists($this, $relation)) {
+                $r = $this->{$relation}();
+                $query->leftJoin($r->getRelated()->getTable() . ' as ' . $relation, function ($join) use ($relation, $keys, $r) {
+                    if ($r instanceof BelongsTo) {
+                        $join->on($relation . '.' . $r->getOwnerKeyName(), '=', $r->getQualifiedForeignKeyName());
+                    } elseif ($r instanceof HasMany) {
+                        $join->on($relation . '.' . $r->getLocalKeyName(), '=', $r->getQualifiedForeignKeyName());
+                    }
+
+                    // TODO: BelongsToMany
+
+                    if (array_key_exists(0, $keys) && array_key_exists(1, $keys)) {
+                        $join->whereRaw($keys[0] . ' = "' . $keys[1] . '"');
+                    }
+                });
+            }
         }
     }
 

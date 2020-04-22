@@ -1,12 +1,17 @@
 {
-    "name": "nicolaslopezj/searchable",
+    "name": "omnispear/searchable",
     "description": "Eloquent model search trait.",
     "keywords": ["laravel", "eloquent", "search", "searchable", "database", "model"],
     "license": "MIT",
+    "version": "1.0",
     "authors": [
         {
             "name": "Nicolas Lopez",
             "email": "nicolaslopezj@me.com"
+        },
+        {
+            "name": "Cody Butz",
+            "email": "cbutz@omnispear.com"
         }
     ],
     "require": {
@@ -16,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Nicolaslopezj\\Searchable\\": "src/"
+            "OmniSpear\\Searchable\\": "src/"
         }
     },
     "minimum-stability": "stable"
