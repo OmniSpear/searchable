@@ -3,7 +3,7 @@
     "description": "Eloquent model search trait.",
     "keywords": ["laravel", "eloquent", "search", "searchable", "database", "model"],
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "authors": [
         {
             "name": "Nicolas Lopez",

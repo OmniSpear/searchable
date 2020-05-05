@@ -213,7 +213,7 @@ trait SearchableTrait
                     if ($r instanceof BelongsTo) {
                         $join->on($relation . '.' . $r->getOwnerKeyName(), '=', $r->getQualifiedForeignKeyName());
                     } elseif ($r instanceof HasMany) {
-                        $join->on($relation . '.' . $r->getLocalKeyName(), '=', $r->getQualifiedForeignKeyName());
+                        $join->on($this->getTable() . '.' . $r->getLocalKeyName(), '=', $relation . '.' . $r->getForeignKeyName());
                     }
 
                     // TODO: BelongsToMany
